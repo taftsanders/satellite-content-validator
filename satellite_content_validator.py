@@ -35,14 +35,14 @@ def call_pulp_api(endpoint):
     global SATELLITE
     if not SATELLITE:
         get_hostname()
-    resp = requests.get(SATELLITE+endpoint, verify=CA_CERT, cert=(PULP_CERT, PULP_KEY))
+    resp = requests.get('https://'+SATELLITE+endpoint, verify=CA_CERT, cert=(PULP_CERT, PULP_KEY))
     return resp
 
 def call_katello_api(endpoint,creds):
     global SATELLITE
     if not SATELLITE:
         get_hostname()
-    resp = requests.get(SATELLITE+endpoint, verify=CA_CERT, auth = HTTPBasicAuth(creds['user'], creds['pw']))
+    resp = requests.get('https://'+SATELLITE+endpoint, verify=CA_CERT, auth = HTTPBasicAuth(creds['user'], creds['pw']))
     return resp
 
 def get_organization_id(creds):
