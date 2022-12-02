@@ -12,7 +12,7 @@ PULP_CERT = './.certs/pulp-client.crt'
 #PULP_CERT = '/etc/pki/katello/certs/pulp-client.crt'
 PULP_KEY = './.certs/pulp-client.key'
 #PULP_KEY = '/etc/pki/katello/private/pulp-client.key'
-SATELLITE = 'https://bombsat612.d.sysmgmt.cee.redhat.com'
+SATELLITE = ''
 ORG_ID = []
 LCE_ID = {}
 
@@ -35,10 +35,16 @@ def get_hostname():
     SATELLITE = socket.gethostname()
 
 def call_pulp_api(endpoint):
+    global SATELLITE
+    if not SATELLITE:
+        get_hostname()
     resp = requests.get(SATELLITE+endpoint, verify=CA_CERT, cert=(PULP_CERT, PULP_KEY))
     return resp
 
 def call_katello_api(endpoint,creds):
+    global SATELLITE
+    if not SATELLITE:
+        get_hostname()
     resp = requests.get(SATELLITE+endpoint, verify=CA_CERT, auth = HTTPBasicAuth(creds['user'], creds['pw']))
     return resp
 
@@ -56,12 +62,6 @@ def get_lce_environments(creds):
     LCE_ID = []
     for env in resp:
         LCE_ID.append(env['id'])
-    # if len(ORG_ID) > 0:
-    #     for org in ORG_ID:
-    #         lce_resp = call_katello_api('/katello/api/organizations/'+str(org)+'/environments', creds).json()
-    #         LCE_ID[org] = []
-    #         for env in lce_resp:
-    #             LCE_ID[org].append(env['id'])
     return LCE_ID
 
 def parse_katello_environments(creds):
@@ -207,8 +207,7 @@ def print_katello_cv(katello_cv_resp):
 def check_rpm(rpmName):
     ts = rpm.TransactionSet()
     mi = ts.dbMatch('name',rpmName)
-    return True #REMOVE AFTER TESTING
-    #return mi
+    return mi
 
 def main():
     print("Checking for presence of satellite RPM...")
