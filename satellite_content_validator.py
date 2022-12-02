@@ -6,12 +6,9 @@ import rpm
 import socket
 
 DEBUG = True
-CA_CERT = './.certs/katello-server-ca.crt'
-#CA_CERT = '/etc/pki/katello/certs/katello-server-ca.crt'
-PULP_CERT = './.certs/pulp-client.crt'
-#PULP_CERT = '/etc/pki/katello/certs/pulp-client.crt'
-PULP_KEY = './.certs/pulp-client.key'
-#PULP_KEY = '/etc/pki/katello/private/pulp-client.key'
+CA_CERT = '/etc/pki/katello/certs/katello-server-ca.crt'
+PULP_CERT = '/etc/pki/katello/certs/pulp-client.crt'
+PULP_KEY = '/etc/pki/katello/private/pulp-client.key'
 SATELLITE = ''
 ORG_ID = []
 LCE_ID = {}
