@@ -206,31 +206,34 @@ def check_rpm(rpmName):
     mi = ts.dbMatch('name',rpmName)
     return mi
 
+def print_all_repositories():
+    creds = get_credentials()
+    
+    katello_repo_resp = call_katello_api('/katello/api/repositories/',creds).json()['results']
+    print('\n\n')
+    print_katello_repo(katello_repo_resp)
+    print('Katello Repository Information Gathered')
+
+    katello_cv_resp = call_katello_api('/katello/api/content_view_versions',creds).json()['results']
+    print('\n\n')
+    print_katello_cv(katello_cv_resp)
+    print('Katello Content View Version Information Gathered')
+
+    katello_lce_resp = parse_katello_environments(creds)
+    print('\n\n')
+    print_katello_environments(katello_lce_resp)
+    print('Katello Life Cycle Environment Repositories Gathered')
+
+    pulp_repo_resp = parse_pulp_repos(katello_lce_resp)
+    print('\n\n')
+    print_pulp_repo(pulp_repo_resp)
+    print("Pulp Repository Information Gathered")
+
 def main():
     print("Checking for presence of satellite RPM...")
     if check_rpm('satellite'):
         print("Satellite RPM found, continuing...")
-        creds = get_credentials()
-        
-        katello_repo_resp = call_katello_api('/katello/api/repositories/',creds).json()['results']
-        print('\n\n')
-        print_katello_repo(katello_repo_resp)
-        print('Katello Repository Information Gathered')
-
-        katello_cv_resp = call_katello_api('/katello/api/content_view_versions',creds).json()['results']
-        print('\n\n')
-        print_katello_cv(katello_cv_resp)
-        print('Katello Content View Version Information Gathered')
-
-        katello_lce_resp = parse_katello_environments(creds)
-        print('\n\n')
-        print_katello_environments(katello_lce_resp)
-        print('Katello Life Cycle Environment Repositories Gathered')
-
-        pulp_repo_resp = parse_pulp_repos(katello_lce_resp)
-        print('\n\n')
-        print_pulp_repo(pulp_repo_resp)
-        print("Pulp Repository Information Gathered")
+        print_all_repositories()
 
     else:
         print("Satellite RPM not detected. Try using 'rpm -qa satellite' to verify.")
